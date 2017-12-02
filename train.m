@@ -10,15 +10,17 @@ channels = 1;
 trainDataPath = 'E:\Code\MATLAB\DnCNN\testsets\BSD68';
 validateImage = 'E:\Code\MATLAB\DnCNN\testsets\Set12\08.png';
 noiseStd = 15/255; % sigma
+% If the network outputs zero matrix,
+% then the loss is approximatly 0.5*channels*(patchSize*noiseStd)^2
 patchesPerImage = 512;
 
 % trainning
 initialLearnRate = 0.001;
 learnRateSchedule = 'piecewise';
-learnRateDropFactor = 0.5;
-learnRateDropPeriod = 3;
+learnRateDropFactor = 0.1;
+learnRateDropPeriod = 10;
 momentum = 0.9;
-l2Regularization = 0.0001; % Weight decay
+l2Regularization = 0.00001; % Weight decay
 batchSize = 64;
 epochs = 30;
 shuffle = 'every-epoch';
@@ -29,10 +31,32 @@ outputPath = ['dncnn_sigma-' num2str(floor(noiseStd*255)) '_' datestr(datetime('
 
 rng(2017) % For reproducibility
 
+if channels == 1
+    channelFormat = 'Grayscale';
+elseif channels == 3
+    channelFormat = 'RGB';
+else
+    error('Unknown channel numbers.')
+end
+
+%% Define network
+net = model(patchSize, channels, depth);
+%net = dnCNNLayers('NetworkDepth', depth);
+
+%% Prepare dataset for trainning
+imds = imageDatastore(trainDataPath);
+fileNums = numel(imds.Files);
+% "GaussianNoiseLevel" specifies the standard derivation rather than variance of AGWN in function denoisingImageSource
+source = denoisingImageSource(imds, ...
+    'patchSize', patchSize, ...
+    'ChannelFormat', channelFormat, ...
+    'GaussianNoiseLevel', noiseStd, ...
+    'PatchesPerImage', patchesPerImage);
+
 %% Load validate dataset
 data_src = imread(validateImage);
 data_src = im2single(data_src);
-%data_noise = imnoise(validate_src,'gaussian', 0, noiseStd.^2);
+%data_noisy = imnoise(validate_src,'gaussian', 0, noiseStd.^2);
 data_noise = noiseStd * randn(size(data_src), 'single');
 data_noisy = data_noise + data_src;
 
@@ -48,20 +72,6 @@ for i = 1:patch_num_h
         validate_noise(:, :, :, j+(i-1)*patch_num_v) = data_noise(1+(j-1)*patchSize:j*patchSize, 1+(i-1)*patchSize:i*patchSize);
     end
 end
-
-%% Define network
-net = model(patchSize, channels, depth);
-%net = dnCNNLayers('NetworkDepth', depth);
-
-%% Prepare dataset for trainning
-imds = imageDatastore(trainDataPath);
-fileNums = numel(imds.Files);
-% "GaussianNoiseLevel" specifies the standard derivation rather than variance of AGWN in function denoisingImageSource
-source = denoisingImageSource(imds, ...
-    'patchSize', patchSize, ...
-    'ChannelFormat', 'GrayScale', ...
-    'GaussianNoiseLevel', noiseStd, ...
-    'PatchesPerImage', patchesPerImage);
 
 %% Train
 % Trainning options
