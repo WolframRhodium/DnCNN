@@ -7,22 +7,23 @@ depth = 17;
 channels = 1;
 
 % dataset
-trainDataPath = 'E:\Code\MATLAB\DnCNN\testsets\BSD68';
+%trainDataPath = 'E:\Code\MATLAB\DnCNN\testsets\BSD68';
 validateImage = 'E:\Code\MATLAB\DnCNN\testsets\Set12\08.png';
+trainDataPath = 'D:\MATLAB\Datasets\TAMPERE17\grayscale';
 noiseStd = 15/255; % sigma
 % If the network outputs zero matrix,
 % then the loss is approximatly 0.5*channels*(patchSize*noiseStd)^2
 patchesPerImage = 512;
 
 % trainning
-initialLearnRate = 0.001;
+initialLearnRate = 0.00001;
 learnRateSchedule = 'piecewise';
 learnRateDropFactor = 0.1;
-learnRateDropPeriod = 10;
+learnRateDropPeriod = 30;
 momentum = 0.9;
-l2Regularization = 0.00001; % Weight decay
+l2Regularization = 0.001; % Weight decay
 batchSize = 64;
-epochs = 30;
+epochs = 50;
 shuffle = 'every-epoch';
 checkpointPath = '.\CheckPoints';
 
