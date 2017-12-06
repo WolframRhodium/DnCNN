@@ -7,4 +7,4 @@ https://github.com/cszn/DnCNN
 
 TODO:
 1. Data augmentation in function denoisingImageSource (flip, rotate)
-2. Other optimizers (Adam, etc. But I don't think that's possible for current MATLAB R2017b without using MatConvNet.)
+2. Other optimizers (Adam, etc. This may be done by modifying ```toolbox\nnet\cnn\+nnet\+internal\+cnn\Trainer.m```. I will make a try when I have time.)
