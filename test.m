@@ -5,7 +5,7 @@ netPath = '.\Records\1\dncnn_sigma-15_11_29__14_51.mat';
 
 %% Read test image and add AGWN
 I = imread(imagePath);
-noisyI = imnoise(I,'gaussian', 0, noiseStd.^2);
+noisyI = imnoise(I, 'gaussian', 0, noiseStd.^2);
 
 %% Read net
 load(netPath)
