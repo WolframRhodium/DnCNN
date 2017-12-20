@@ -8,3 +8,4 @@ https://github.com/cszn/DnCNN
 TODO:
 1. Data augmentation in function denoisingImageSource (flip, rotate)
 2. Other optimizers (Adam, etc. This may be done by modifying ```toolbox\nnet\cnn\+nnet\+internal\+cnn\Trainer.m```. I will make a try when I have time.)
+3. Implement the novel [FFDNet](https://arxiv.org/abs/1710.04026). https://github.com/cszn/FFDNet
