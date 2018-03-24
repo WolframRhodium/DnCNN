@@ -1,4 +1,6 @@
-Internal 'denoiseImage.m' should be modified to support DAGNetworks like ResNet:
+**The following modifications are only required in _MATLAB R2017b_.**
+
+Internal ```denoiseImage.m``` should be modified to support DAGNetworks like ResNet:
 
 Replace L73:
 ```MATLAB
